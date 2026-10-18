@@ -1,0 +1,86 @@
+{
+  "bag-of-worlds": {
+    "compat": {
+      "legacyModuleActive": "Disable the old \"Foundry Mobile Bridge\" module (foundry-mobile-bridge): Bag of Worlds replaces it, and running both duplicates the movement grid.",
+      "appNewerThanBridge": "{player} connected with app {appVersion}; this bridge is {bridgeVersion} — update the Bag of Worlds module."
+    },
+    "pathGrid": {
+      "settings": {
+        "enabled": {
+          "name": "Show movement grid",
+          "hint": "Highlight the grid spaces the selected token can reach."
+        },
+        "maxMultiplier": {
+          "name": "Search range (speed multiple)",
+          "hint": "How far beyond the token's speed the search extends. 2 covers a dash."
+        },
+        "colorNormal": {
+          "name": "Normal movement colour",
+          "hint": "Fill colour for spaces reachable within the token's speed."
+        },
+        "colorDash": {
+          "name": "Dash colour",
+          "hint": "Fill colour for spaces that can only be reached by dashing."
+        },
+        "alpha": {
+          "name": "Highlight opacity",
+          "hint": "Opacity of the highlighted grid spaces."
+        },
+        "borders": {
+          "name": "Draw space borders",
+          "hint": "Outline each highlighted grid space."
+        },
+        "tokensBlock": {
+          "name": "Tokens block movement",
+          "hint": "Which other tokens count as obstacles when the grid is computed.",
+          "choices": {
+            "none": "No token blocks movement",
+            "hostile": "Only tokens of an opposing disposition",
+            "all": "Every token blocks movement",
+            "elevationruler": "Follow Elevation Ruler (its rules and difficulty multipliers)"
+          }
+        },
+        "useHistory": {
+          "name": "Account for movement already spent",
+          "hint": "During combat, subtract the distance the token has already moved this turn."
+        },
+        "terrain": {
+          "name": "Terrain cost",
+          "hint": "Resolving terrain for every step is accurate but slow. Automatic skips it on scenes with no active region behaviours.",
+          "choices": {
+            "auto": "Automatic",
+            "always": "Always resolve terrain",
+            "never": "Ignore terrain"
+          }
+        },
+        "clickToMove": {
+          "name": "Click to move",
+          "hint": "Clicking a highlighted space moves the token there along the computed path."
+        },
+        "confirmDash": {
+          "name": "Confirm dash moves",
+          "hint": "Require a second click before moving into a space that costs more than the token's speed."
+        },
+        "maxCells": {
+          "name": "Maximum grid spaces searched",
+          "hint": "Safety cap for very fast tokens on very large scenes."
+        }
+      },
+      "keybindings": {
+        "toggle": {
+          "name": "Toggle movement grid",
+          "hint": "Show or hide the movement grid for the selected token."
+        }
+      },
+      "controls": {
+        "toggle": {
+          "title": "Movement grid"
+        }
+      },
+      "notifications": {
+        "occupied": "That space is occupied by another token.",
+        "confirmDash": "Dash: {cost} {units}. Click again to confirm."
+      }
+    }
+  }
+}
