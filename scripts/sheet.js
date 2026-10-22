@@ -7,6 +7,8 @@ import { escapeHtml } from "./media.js";
 import { APPROVAL_LOG_FOLDER } from "./offline.js";
 import { iterItemActivities, resolveItemTemplateSpec } from "./templates.js";
 // </auto-imports>
+import { enrichedPlainTexts, stripHtmlText } from "./item-text.js";
+export { stripHtmlText };
 // Character sheet build + inventory/journals/spells/features/biography — extracted from mobile-bridge.js.
 
 export function numericBonus(field) {
@@ -231,14 +233,6 @@ export function routeActorPortrait(actor) {
   return routeAssetPath(raw);
 }
 
-export function stripHtmlText(text) {
-  return String(text ?? "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 export function formatWeaponDamageLabel(item) {
   if (item.type !== "weapon") return "";
   const labelDamage = item.labels?.damage;
@@ -303,7 +297,7 @@ export function formatSpellDamageLabel(item) {
  * List inventory items for an actor (weapons, equipment, consumables, tools, loot, etc.)
  * Excludes spells and class features (those are on the sheet already).
  */
-export function listInventory(user, actorId) {
+export async function listInventory(user, actorId) {
   const actor = getOwnedActor(user, actorId);
   const INVENTORY_TYPES = new Set(["weapon", "equipment", "consumable", "tool", "loot", "container", "backpack"]);
   const items = [];
@@ -323,14 +317,24 @@ export function listInventory(user, actorId) {
     };
   });
   const allItems = actor.items.contents ?? [...actor.items.values()];
+  // Enricher syntax ([[lookup @name]], @UUID[..]{..}) is resolved first, all items
+  // concurrently; see item-text.js.
+  const inventoryItems = allItems.filter((item) => INVENTORY_TYPES.has(item.type));
+  const inventoryTexts = await enrichedPlainTexts(inventoryItems.flatMap((item) => [
+    { raw: item.system.description?.value, item },
+    { raw: item.system.description?.chat, item }
+  ]));
+  const textsByItem = new Map(inventoryItems.map((item, i) => [item, {
+    description: inventoryTexts[i * 2],
+    chatDescription: inventoryTexts[i * 2 + 1]
+  }]));
   for (const item of allItems) {
     if (!INVENTORY_TYPES.has(item.type)) continue;
     const act = item.system.activation;
     const hasAction = act && act.type && act.type !== "none";
-    const description = stripHtmlText(item.system.description?.value);
     // dnd5e's "chat description" doubles as the player-written short line; the
     // GM sees the same field on the item sheet, unlike a module flag would be.
-    const chatDescription = stripHtmlText(item.system.description?.chat);
+    const { description, chatDescription } = textsByItem.get(item);
     items.push({
       id: item.id,
       name: item.name,
@@ -623,7 +627,7 @@ export function spellListSection(sys, method) {
 /**
  * List all spells on the actor, grouped by spellbook section, including spell slot info.
  */
-export function listSpells(user, actorId) {
+export async function listSpells(user, actorId) {
   const actor = getOwnedActor(user, actorId);
 
   const SCHOOL_LABELS = {
@@ -633,6 +637,11 @@ export function listSpells(user, actorId) {
 
   const spells = [];
   const allItems = actor.items.contents ?? [...actor.items.values()];
+  const spellItems = allItems.filter((item) => item.type === "spell");
+  const spellTexts = await enrichedPlainTexts(
+    spellItems.map((item) => ({ raw: item.system?.description?.value, item }))
+  );
+  const descriptionByItem = new Map(spellItems.map((item, i) => [item, spellTexts[i]]));
   for (const item of allItems) {
     if (item.type !== "spell") continue;
     try {
@@ -667,7 +676,7 @@ export function listSpells(user, actorId) {
         usesLabel: uses.label ?? "",
         requiresTarget: (sys.target?.affects?.type ?? "") !== "self"
           && (sys.target?.affects?.type ?? "") !== "",
-        description: stripHtmlText(sys.description?.value),
+        description: descriptionByItem.get(item),
         damageLabel: formatSpellDamageLabel(item),
         rangeLabel: formatSpellRangeLabel(item),
         canUse: typeof item.use === "function",
@@ -731,10 +740,15 @@ export const FEATURE_SECTION_ORDER = {
 /**
  * List actor features (dnd5e Item type "feat"), grouped like the Features sheet tab.
  */
-export function listFeatures(user, actorId) {
+export async function listFeatures(user, actorId) {
   const actor = getOwnedActor(user, actorId);
   const features = [];
   const allItems = actor.items.contents ?? [...actor.items.values()];
+  const featItems = allItems.filter((item) => item.type === "feat");
+  const featTexts = await enrichedPlainTexts(
+    featItems.map((item) => ({ raw: item.system?.description?.value, item }))
+  );
+  const descriptionByItem = new Map(featItems.map((item, i) => [item, featTexts[i]]));
   for (const item of allItems) {
     if (item.type !== "feat") continue;
     try {
@@ -768,7 +782,7 @@ export function listFeatures(user, actorId) {
         usesLabel: uses.label ?? "",
         requiresTarget: (sys.target?.affects?.type ?? "") !== "self"
           && (sys.target?.affects?.type ?? "") !== "",
-        description: stripHtmlText(sys.description?.value),
+        description: descriptionByItem.get(item),
         damageLabel: formatSpellDamageLabel(item),
         rangeLabel: formatItemRangeLabel(item) || formatSpellRangeLabel(item),
         // A feature with charges is usable even without an activity: spending

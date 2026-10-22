@@ -620,7 +620,7 @@ export async function handleMessage(message) {
         return ok(requestId, { accepted: true });
       }
       case "actor.inventory.list":
-        return ok(requestId, listInventory(user, payload.actorId));
+        return ok(requestId, await listInventory(user, payload.actorId));
       case "journal.list":
         return ok(requestId, await listJournals(user));
       case "journal.note.create":
@@ -634,9 +634,9 @@ export async function handleMessage(message) {
           user, payload.journalId, payload.targetUserId, payload.level
         ));
       case "actor.spells.list":
-        return ok(requestId, listSpells(user, payload.actorId));
+        return ok(requestId, await listSpells(user, payload.actorId));
       case "actor.features.list":
-        return ok(requestId, listFeatures(user, payload.actorId));
+        return ok(requestId, await listFeatures(user, payload.actorId));
       case "actor.condition.list":
         return ok(requestId, actorConditionList(user, payload.actorId));
       case "actor.condition.toggle":

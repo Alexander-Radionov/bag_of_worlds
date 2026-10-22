@@ -2,6 +2,11 @@
 
 Install the app and the module of the **same version** together.
 
+## 1.1.0
+
+- **Item, feature and spell descriptions** are resolved by Foundry before they are sent to the phone: dnd5e enrichers such as `[[lookup @name]]` or `@UUID[...]{label}` show the real text (the character's name, the link label) instead of raw syntax. If enrichment fails for an item, its plain text is sent as before. The reply shape of `actor.inventory.list`, `actor.spells.list` and `actor.features.list` is unchanged, so there is no new capability and the oldest supported module version is still 0.12.0.
+- Tap-to-move confirmation (first tap previews the route, second tap moves) is an app-side change and needs nothing from the module.
+
 ## 1.0.0 — first public release
 
 - **Version handshake:** the module reports its real version and a list of capabilities to the app; the app warns players when the module is too old, and the GM gets a one-time notice when a player connects with a newer app.

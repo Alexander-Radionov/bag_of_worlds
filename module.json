@@ -2,7 +2,7 @@
   "id": "bag-of-worlds",
   "title": "Bag of Worlds",
   "description": "Companion module for the Bag of Worlds mobile app: lets players use their character sheet and the battle map from a phone. Unofficial; not affiliated with or endorsed by Foundry Gaming LLC.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatibility": {
     "minimum": "12",
     "verified": "14"
@@ -38,7 +38,7 @@
   },
   "socket": true,
   "manifest": "https://github.com/Alexander-Radionov/bag_of_worlds/releases/latest/download/module.json",
-  "download": "https://github.com/Alexander-Radionov/bag_of_worlds/releases/download/v1.0.0/bag-of-worlds.zip",
+  "download": "https://github.com/Alexander-Radionov/bag_of_worlds/releases/download/v1.1.0/bag-of-worlds.zip",
   "url": "https://github.com/Alexander-Radionov/bag_of_worlds",
   "readme": "https://github.com/Alexander-Radionov/bag_of_worlds/blob/main/README.md",
   "changelog": "https://github.com/Alexander-Radionov/bag_of_worlds/blob/main/CHANGELOG.md",
