@@ -2,6 +2,10 @@
 
 Install the app and the module of the **same version** together.
 
+## 1.1.1
+
+- No module changes; the version is aligned with the app hotfix 1.1.1 (the app fixed a crash on real phones right after selecting a character). Keeping the module on the same version stops the GM from seeing an "update the module" warning when players run the newer app.
+
 ## 1.1.0
 
 - **Item, feature and spell descriptions** are resolved by Foundry before they are sent to the phone: dnd5e enrichers such as `[[lookup @name]]` or `@UUID[...]{label}` show the real text (the character's name, the link label) instead of raw syntax. If enrichment fails for an item, its plain text is sent as before. The reply shape of `actor.inventory.list`, `actor.spells.list` and `actor.features.list` is unchanged, so there is no new capability and the oldest supported module version is still 0.12.0.
