@@ -2,6 +2,10 @@
 
 Install the app and the module of the **same version** together.
 
+## 1.1.2
+
+- No module changes; the version is aligned with the app release 1.1.2 (the app fixed sign-in on Foundry 14.369 and 14.370, which showed HTTP 400 "The request could not be processed" after picking a player). Keeping the module on the same version stops the GM from seeing an "update the module" warning when players run the newer app.
+
 ## 1.1.1
 
 - No module changes; the version is aligned with the app hotfix 1.1.1 (the app fixed a crash on real phones right after selecting a character). Keeping the module on the same version stops the GM from seeing an "update the module" warning when players run the newer app.
